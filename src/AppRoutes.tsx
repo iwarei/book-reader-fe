@@ -4,6 +4,7 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { RouteAuthGuard } from './RouteAuthGuard';
 import { Home } from './components/pages/Home';
+import { RegisterBook } from './components/pages/RegisterBook';
 import { Login } from './components/pages/Login';
 import { Register } from './components/pages/Register';
 import { ErrorPage } from './components/pages/ErrorPage';
@@ -22,6 +23,14 @@ const AppRoutes = () => {
           element={
             <RouteAuthGuard>
               <Home />
+            </RouteAuthGuard>
+          }
+        />
+        <Route
+          path="book"
+          element={
+            <RouteAuthGuard>
+              <RegisterBook />
             </RouteAuthGuard>
           }
         />

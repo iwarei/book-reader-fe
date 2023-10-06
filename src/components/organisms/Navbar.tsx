@@ -17,13 +17,23 @@ type NavbarLinkProps = {
 const PageTitleAndLogo = () => {
   return (
     <>
-      <img
-        src="https://flowbite.com/docs/images/logo.svg"
-        className="h-8 mr-3"
-        alt="Flowbite Logo"
-      />
+      <svg
+        className="w-8 h-8 mr-2 text-gray-800 dark:text-white"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 20 18"
+      >
+        <path
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M10 16.5c0-1-8-2.7-9-2V1.8c1-1 9 .707 9 1.706M10 16.5V3.506M10 16.5c0-1 8-2.7 9-2V1.8c-1-1-9 .707-9 1.706"
+        />
+      </svg>
       <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-        Flowbite
+        BookReader
       </span>
     </>
   );
@@ -164,6 +174,8 @@ export const Navbar = ({ showButton = true }: NavbarProps) => {
                 ) : (
                   // 認証時のボタン・リンク
                   <>
+                    {/* 書籍新規登録/編集 */}
+                    <NavbarLink text="書籍管理" link="/book" />
                     {/* アカウント情報編集リンク */}
                     <NavbarLink text="アカウント" link="/account" />
                     {/* ログアウトボタン */}

@@ -1,72 +1,93 @@
 ## 環境構築
+
 1. `git clone https://github.com/iwarei/react-laravel-template-fe.git`
 2. `npm install`
 3. `npm start`
 
 ## ほか、メモ
+
 認証関連の機能は作成済みなので、すぐに実機能の実装に取り掛かれます!
 
 ### 新しいページの作成方法
+
 1. まず、新しいページ用のコンポーネントを`src\components\pages`配下に作成します。
-   各ページでレイアウトを共通化する場合は、`src\components\templates\PageTemplate.tsx`をカスタムしていきページ用のコンポーネントも`PageTemplate.tsx`のchildrenとすると便利です。
+   各ページでレイアウトを共通化する場合は、`src\components\templates\PageTemplate.tsx`をカスタムしていきページ用のコンポーネントも`PageTemplate.tsx`の children とすると便利です。
 
 2. 作成したページのコンポーネントを実際に表示できるようにしていきます。
    `AppRouters.tsx`を編集していきます。
    例えば、`/example`にアクセスされたときに表示するページを追加した場合、以下を`<Routes>`の子要素として追加していきます。
-  ``` typescript
-  import { Example } from './components/pages/Example';
 
-  // ...中略
-  <Routes>
-    <Route path="example" element={<Example />} />
-  </Routes>
-  ```
-  また、追加したページはログイン認証していないと表示しないようにしたい場合は下記のようにRouteAuthGuardの子要素とします。
-  ``` typescript
-  <Routes>
-    <Route
-      path="example"
-      element={
-        <RouteAuthGuard>
-          <Example />
-        </RouteAuthGuard>
-      }
-    />
-  </Routes>
-  ```
-  このとき、ログイン認証せずに`/example`にアクセスしようとすると、`/login`にリダイレクトされます。
-  もし、リダイレクト先をカスタマイズしたい場合は、`RouteAuthGuard`のPropsに`redirect`を指定してください。
+```typescript
+import { Example } from './components/pages/Example';
+
+// ...中略
+<Routes>
+  <Route path="example" element={<Example />} />
+</Routes>;
+```
+
+また、追加したページはログイン認証していないと表示しないようにしたい場合は下記のように RouteAuthGuard の子要素とします。
+
+```typescript
+<Routes>
+  <Route
+    path="example"
+    element={
+      <RouteAuthGuard>
+        <Example />
+      </RouteAuthGuard>
+    }
+  />
+</Routes>
+```
+
+このとき、ログイン認証せずに`/example`にアクセスしようとすると、`/login`にリダイレクトされます。
+もし、リダイレクト先をカスタマイズしたい場合は、`RouteAuthGuard`の Props に`redirect`を指定してください。
 
 ##### Tips 処理後、他のページにリダイレクトさせたい場合
-1. `useNavigate`をimportします。
-``` typescript
+
+1. `useNavigate`を import します。
+
+```typescript
 import { useNavigate } from 'react-router-dom';
 ```
-2. 関数コンポーネントのトップレベルでnavigateを定義します。
-``` typescript
+
+2. 関数コンポーネントのトップレベルで navigate を定義します。
+
+```typescript
 const navigate = useNavigate();
 ```
+
 3. リダイレクトさせたい処理の後に、下記のようにしてリダイレクトさせたいページを設定します。
-``` typescript
+
+```typescript
 navigate('/');
 ```
+
 ※ `window.location.href = '/'`のように記述すると、ライフサイクルがおかしくなる場合があります。
 
 ##### Tips アラートメッセージを表示させたい場合
+
 処理後に「処理に成功しました。」、エラー時に「エラーが発生しました。」など、ユーザに対してアラートメッセージを表示させたいこともあるでしょう。
 現在のページ上でアラートを表示させる場合とリダイレクト先のページでアラートメッセージを表示させる場合のそれぞれの場合の表示方を説明します。
 
 ###### 現在のページ上でアラートメッセージを表示させる場合
-1. `AlertContext`をimportします。
-``` typescript
+
+1. `AlertContext`を import します。
+
+```typescript
 import { AlertContext } from '../../context/AlertProvider';
 ```
+
 2. コンポーネントのトップレベルで`setAlert`を取得、定義します。
-``` typescript
+
+```typescript
 const { setAlert } = useContext(AlertContext)!;
 ```
+
 3. 処理後などに、`setAlert`で表示させたいメッセージとアラート色を設定します。
-``` typescript 
+
+```typescript
 setAlert({
   color: 'failure',
   msg: `処理中にエラーが発生しました。`,
@@ -74,26 +95,35 @@ setAlert({
 ```
 
 ###### リダイレクト先のページでアラートメッセージを表示させる場合
+
 Tips 処理後、他のページにリダイレクトさせたい場合のように、先にリダイレクト先を設定しておいてください。
-1. `navigate`の第2引数にオブジェクトとしてメッセージとアラート色を設定します。 
-``` typescript
-navigate('/', { 
-  state: { msg: 'ログインしました。', color: 'info' } 
+
+1. `navigate`の第 2 引数にオブジェクトとしてメッセージとアラート色を設定します。
+
+```typescript
+navigate('/', {
+  state: { msg: 'ログインしました。', color: 'info' },
 });
 ```
 
 ##### Tips ログインしているユーザ情報を取得したい場合
-1. `useContext`, `AuthInfoContext`をimportします。
-``` typescript
+
+1. `useContext`, `AuthInfoContext`を import します。
+
+```typescript
 import React, { useContext } from 'react';
 import { AuthInfoContext } from '../../context/AuthProvider';
 ```
+
 2. コンポーネントのトップレベルで`userInfo`を取得、定義します。
-``` typescript
+
+```typescript
 const { userInfo } = useContext(AuthInfoContext)!;
 ```
+
 3. 必要に応じて、取得したユーザ情報を使用します。
-``` typescript
+
+```typescript
 <InputFormWithLabel
   labelText="メールアドレス"
   formName="email"
@@ -104,25 +134,31 @@ const { userInfo } = useContext(AuthInfoContext)!;
 
 ※そもそもログイン済みかを判別するときは?
 `userInfo`が`undefined`かでもチェックできますが、なんか嫌なので。
-1. `useContext`, `AuthInfoContext`をimportします。
-``` typescript
+
+1. `useContext`, `AuthInfoContext`を import します。
+
+```typescript
 import React, { useContext } from 'react';
 import { IsAuthedContext } from '../../context/AuthProvider';
 ```
+
 2. コンポーネントのトップレベルで`isAuthed`を取得、定義します。
-``` typescript
-  const { isAuthed } = useContext(IsAuthedContext)!;
+
+```typescript
+const { isAuthed } = useContext(IsAuthedContext)!;
 ```
+
 3. 条件分岐などで使用します
-``` typescript
+
+```typescript
 if (isAuthed) {
   // 処理
 }
 
-rerurn (
+rerurn(
   <span>
     {isAuthed && (
-      <PrimaryButton 
+      <PrimaryButton
         text="ログアウト"
         id="logout-button"
         onClick={logoutHandler}
@@ -132,7 +168,66 @@ rerurn (
 );
 ```
 
+##### コンポーネント部品・Table の使い方について
 
+まず、Table を import した際に下記のようなエラーが表示される場合があります。
+
+```console
+ERROR in [eslint]
+src\components\organisms\Table.tsx
+  Line 128:21:  Visible, non-interactive elements with click handlers must have at least one keyboard listener  jsx-a11y/click-events-have-key-events
+  Line 128:21:  Non-interactive elements should not be assigned mouse or keyboard event listeners               jsx-a11y/no-noninteractive-element-interactions
+```
+
+このエラーは下記コマンドを実行することで解消されるはずです。
+
+```console
+npm install
+```
+
+では、実際の使用例です。
+|#|Name|Year|Price|
+|--|--|--|--|
+|1|iPad mini 6th|2021|\65,000|
+|2|MacBook Air M2|2021|\165,000|
+
+上記のようなテーブルを作成する場合、下記のように Table コンポーネントを使用します。
+
+```typescript
+<Table
+  {...{
+    headerProps: [
+      { text: '#' },
+      { text: 'Name' },
+      { text: 'Year' },
+      { text: 'Price' },
+    ],
+    rowProps: [
+      {
+        cellProps: [
+          { text: '1' },
+          { text: 'iPad mini 6th' },
+          { text: '2021' },
+          { text: '\\65,000' },
+        ],
+      },
+      {
+        cellProps: [
+          { text: '2' },
+          { text: 'MacBook Air M2' },
+          { text: '2021' },
+          { text: '\\165,000' },
+        ],
+      },
+    ],
+    hover: false,
+    border: false,
+    shadow: false,
+  }}
+/>
+```
+
+実際に使用する場合には、useEffect 内で useState を使用し、rowProps の値を API を叩いたレスポンスにするなど、状況に応じて上手に使用してみてください。
 
 # Getting Started with Create React App
 
